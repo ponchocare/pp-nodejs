@@ -9,6 +9,7 @@ type PaymentInit = {
   amount: number;
   email: string;
   note?: string;
+  expiry?: Date | string;
 };
 
 const INITIATE_PAYMENT_ENDPOINT = '/api/integration/generic/initiate';
