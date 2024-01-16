@@ -77,6 +77,33 @@ describe('Client', async () => {
       );
     });
 
+    it.each([
+      [new Date(1705403600000), '2024-01-16T11:13:20.000Z'],
+      ['some string', 'some string'],
+    ])(
+      'requests a url for a payment with an expiry date',
+      async (sending, sent) => {
+        const url = 'http://some/url';
+        const init = {
+          ...defaults,
+          expiry: sending,
+        };
+        const client = new Client('key');
+
+        fetchMock.mockResolvedValueOnce(Response.redirect(url, 302));
+        expect(await client.initiatePayment(init)).toBe(url);
+        expect(fetchMock).toHaveBeenCalledWith(
+          'https://pay.ponchopay.com/api/integration/generic/initiate',
+          {
+            body: JSON.stringify({ ...init, expiry: sent, token }),
+            headers: { 'content-type': 'application/json' },
+            method: 'post',
+            redirect: 'manual',
+          },
+        );
+      },
+    );
+
     it('fails if the response from the server is not a redirect', async () => {
       const client = new Client('key');
 
