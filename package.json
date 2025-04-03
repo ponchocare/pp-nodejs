@@ -11,7 +11,10 @@
   ],
   "scripts": {
     "clean": "rimraf dist",
-    "build": "npm run clean && tsc",
+    "build": "npm run clean && tsc && npm run patch",
+    "patch": "npm run patch:name && npm run patch:version",
+    "patch:name": "NAME=$(jq -r '.name' package.json) && find dist -type f -exec sed -i \"s|##NAME##|$NAME|g\" {} +",
+    "patch:version": "VERSION=$(jq -r '.version' package.json) && find dist -type f -exec sed -i \"s|##VERSION##|$VERSION|g\" {} +",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "eslint --ext .ts,.html . --ignore-path .gitignore && prettier \"**/*.ts\" --check --ignore-path .gitignore",
