@@ -1,7 +1,7 @@
-import { createJWT, createToken } from './token';
-import { PPError } from './error';
-import { Api } from './api';
-import { replaceParams, Serialisable, serialise } from './utils';
+import { createJWT, createToken } from './token.js';
+import { PPError } from './error.js';
+import { Api } from './api.js';
+import { replaceParams, Serialisable, serialise } from './utils.js';
 
 type ISO8601Date = `${number}-${number}-${number}`;
 type ISO8601Time = `${number}:${number}:${number}.${number}Z`;

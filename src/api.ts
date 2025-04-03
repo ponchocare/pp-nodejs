@@ -1,5 +1,5 @@
 import fetch, { type HeadersInit, type Response } from 'node-fetch';
-import { joinPaths, serialise, telemetry } from './utils';
+import { joinPaths, serialise, telemetry } from './utils.js';
 
 export class Api {
   private base: string;

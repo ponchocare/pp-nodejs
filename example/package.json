@@ -1,0 +1,11 @@
+{
+  "name": "example",
+  "version": "0.0.1",
+  "description": "Example of pp-nodejs usage",
+  "main": "index.js",
+  "author": "info@ponchopay.com",
+  "license": "MIT",
+  "dependencies": {
+    "@ponchopay/pp-nodejs": "file:../"
+  }
+}
