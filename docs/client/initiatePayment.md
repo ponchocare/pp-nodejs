@@ -32,7 +32,7 @@ PaymentInit:
 | Parameter   | Mandatory | Type            | Description                                                         |
 | ----------- | --------- | --------------- | ------------------------------------------------------------------- |
 | metadata    | Yes       | string          | Any string you want to keep attached to the payment                 |
-| urn         | Yes       | string          | The location Unique Reference Number                                         |
+| urn         | Yes       | string          | The location Unique Reference Number                                |
 | amount      | Yes       | number          | The payable amount in pences                                        |
 | email       | Yes       | string          | The user email                                                      |
 | note        | No        | string          | Any note to be attached to the payment                              |

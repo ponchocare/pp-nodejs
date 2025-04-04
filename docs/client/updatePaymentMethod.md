@@ -35,7 +35,7 @@ PaymentMethodUpdate:
 | urn              | Yes       | string | The location Unique Reference Number                                                                     |
 | email            | Yes       | string | Email authoring the update (doesn't need to be a signed in user)                                         |
 | type             | Yes       | string | The new payment method type. It can be `card`, `childcare-voucher`, or `tax-free-childcare`              |
-| amount           | Yes       | name   | The new payment method amount                                                                            |
+| amount           | Yes       | number | The new payment method amount                                                                            |
 | voucher_provider | Maybe     | string | If type is `childcare-voucher`, this must contain the voucher provider (Check `VoucherProvider` details) |
 
 VoucherProvider:

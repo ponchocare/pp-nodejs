@@ -80,7 +80,7 @@ type PaymentMethodRefund = JWTPayload & {
  * It collects the methods to manipulate payments in PonchoPay.
  */
 export class Client {
-  private readonly api!: Api;
+  private readonly api: Api;
   private readonly key: string;
 
   public constructor(key: string, base: string = 'https://pay.ponchopay.com/') {

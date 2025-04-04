@@ -44,7 +44,7 @@ Repetition:
 
 | Parameter   | Mandatory | Type   | Description                                                                           |
 | ----------- | --------- | ------ | ------------------------------------------------------------------------------------- |
-| granularity | Yes       | string | The time span range. It can be `daily`, `weekly`, `monthly`, or `yearly`             |
+| granularity | Yes       | string | The time span range. It can be `daily`, `weekly`, `monthly`, or `yearly`              |
 | period      | Yes       | number | The amount of granularity before the next payment is generated.                       |
 | weekdays    | Maybe     | set    | If granularity is `weekly`, this must contain a set with values from the Weekday enum |
 | day         | Maybe     | number | If granularity is `monthly`, this must contain the day of the month                   |

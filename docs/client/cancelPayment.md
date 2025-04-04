@@ -18,7 +18,7 @@ await client.cancelPayment(paymentId, payload);
 Declaration:
 
 ```ts
-client.updatePaymentMethod(paymentId: string, payload: JWTPayload): Promise<void>;
+client.cancelPayment(paymentId: string, payload: JWTPayload): Promise<void>;
 ```
 
 Parameters:

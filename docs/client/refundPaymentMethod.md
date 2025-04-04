@@ -34,7 +34,7 @@ PaymentMethodRefund:
 | --------- | --------- | ------ | -------------------------------------------------------------------------------------- |
 | urn       | Yes       | string | The location Unique Reference Number                                                   |
 | email     | Yes       | string | Email authoring the update (doesn't need to be a signed in user)                       |
-| amount    | Yes       | name   | The amount to be refunded. Can't be greather than the remaining amount in the payment. |
+| amount    | Yes       | number | The amount to be refunded. Can't be greather than the remaining amount in the payment. |
 
 Returns:
 

@@ -93,7 +93,7 @@ export function telemetry(): Record<string, SerialisableValue> {
   const { arch, platform, version } = process;
 
   return {
-    package: { vendor: 'poncho', package: '##NAME##', version: '##VERSION##' },
+    package: { vendor: 'poncho', name: '##NAME##', version: '##VERSION##' },
     environment: { runtime: 'nodejs', arch, platform, version },
   };
 }

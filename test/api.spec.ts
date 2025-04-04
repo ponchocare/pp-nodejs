@@ -6,16 +6,16 @@ vi.mock('node-fetch', () => ({ default: fetchMock }));
 import { Api } from '../src/api';
 import { serialise } from '../src/utils';
 
-const base = 'pay.ponchopay.com';
+const prod = 'pay.ponchopay.com';
 const demo = 'demo.ponchopay.com';
 const path = '/endpoint/path';
 const headers = { 'Accept-Language': 'en' };
 const body = serialise({ payment: '9207f21a', amount: 123 });
 
 describe.each([
-  { param: undefined, expected: base, description: 'default base' },
-  { param: `https://${demo}/`, expected: demo, description: 'demo url' },
-])('Api (With $description)', async ({ param, expected }) => {
+  { base: undefined, expected: prod, description: 'default base' },
+  { base: `https://${demo}/`, expected: demo, description: 'demo url' },
+])('Api (With $description)', async ({ base, expected }) => {
   beforeEach(() => fetchMock.mockClear());
 
   describe.each([
@@ -26,7 +26,7 @@ describe.each([
       const mockedResponse = new Response('response', { status: 200 });
       fetchMock.mockResolvedValueOnce(mockedResponse);
 
-      const api = new Api(param);
+      const api = new Api(base);
       const expectedResponse = await api[fn](path, headers, body);
 
       expect(expectedResponse).toBe(mockedResponse);
