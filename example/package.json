@@ -5,6 +5,7 @@
   "main": "index.js",
   "author": "info@ponchopay.com",
   "license": "MIT",
+  "type": "module",
   "dependencies": {
     "@ponchopay/pp-nodejs": "file:../"
   }
