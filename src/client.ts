@@ -33,10 +33,10 @@ export enum Weekday {
 }
 
 type SubscriptionRepetition =
-  | { granularity: 'daily'; period: number }
-  | { granularity: 'weekly'; period: number; weekdays: Set<Weekday> }
-  | { granularity: 'monthly'; period: number; day: number }
-  | { granularity: 'yearly'; period: number };
+  | { granularity: 'day'; period: number }
+  | { granularity: 'week'; period: number; weekdays: Set<Weekday> }
+  | { granularity: 'month'; period: number; day: number }
+  | { granularity: 'year'; period: number };
 
 type SubscriptionEnding =
   | { condition: 'never' }
