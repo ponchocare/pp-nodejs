@@ -1,2 +1,2 @@
-export { createToken } from './token.js';
-export { Client } from './client.js';
+export { createToken, createJWT } from './token.js';
+export { Client, Weekday, PaymentMethodType } from './client.js';
