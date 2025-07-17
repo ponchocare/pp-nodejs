@@ -185,7 +185,7 @@ export class Client {
   }
 
   /**
-   * Requests the cancelation of payment.
+   * Requests the cancelation of a payment.
    */
   public async cancelPayment(
     paymentId: string,

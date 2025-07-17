@@ -134,7 +134,7 @@ describe('Client', () => {
       metadata: 'subscription-1234',
       email,
       repetition: {
-        granularity: 'weekly',
+        granularity: 'week',
         period: 2,
         weekdays: new Set([Weekday.Tuesday, Weekday.Friday]),
       },
