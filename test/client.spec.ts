@@ -134,7 +134,7 @@ describe('Client', () => {
       metadata: 'subscription-1234',
       email,
       repetition: {
-        granularity: 'weekly',
+        granularity: 'week',
         period: 2,
         weekdays: new Set([Weekday.Tuesday, Weekday.Friday]),
       },
@@ -364,6 +364,40 @@ describe('Client', () => {
 
       expect(makePutRequestMock).toHaveBeenCalledWith(
         '/api/payment/d34e567a/cancel',
+        { Authorization: authorization },
+        serialise({}),
+      );
+      expect(makePostRequestMock).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('cancelRecursion', () => {
+    it('cancels a recursion', async () => {
+      const response = new Response(undefined, { status: 204 });
+      makePutRequestMock.mockResolvedValueOnce(response);
+
+      const client = new Client(key);
+      await client.cancelRecursion('hseuwz1y', { urn, email });
+
+      expect(makePutRequestMock).toHaveBeenCalledWith(
+        '/api/recursion/hseuwz1y/cancel',
+        { Authorization: authorization },
+        serialise({}),
+      );
+      expect(makePostRequestMock).not.toHaveBeenCalled();
+    });
+
+    it('fails if the response from the server is not satisfactory', async () => {
+      const response = new Response('all good?', { status: 200 });
+      makePutRequestMock.mockResolvedValueOnce(response);
+
+      const client = new Client(key);
+      await expect(
+        client.cancelRecursion('hseuwz1y', { urn, email }),
+      ).rejects.toBeInstanceOf(PPError);
+
+      expect(makePutRequestMock).toHaveBeenCalledWith(
+        '/api/recursion/hseuwz1y/cancel',
         { Authorization: authorization },
         serialise({}),
       );

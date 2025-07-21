@@ -185,7 +185,7 @@ export class Client {
   }
 
   /**
-   * Requests the cancelation of payment.
+   * Requests the cancelation of a payment.
    */
   public async cancelPayment(
     paymentId: string,
@@ -193,6 +193,19 @@ export class Client {
   ): Promise<void> {
     await this.issuePutRequest(
       replaceParams('/api/payment/[paymentId]/cancel', { paymentId }),
+      payload,
+    );
+  }
+
+  /**
+   * Requests the cancelation of a recursion.
+   */
+  public async cancelRecursion(
+    recursionId: string,
+    payload: JWTPayload,
+  ): Promise<void> {
+    await this.issuePutRequest(
+      replaceParams('/api/recursion/[recursionId]/cancel', { recursionId }),
       payload,
     );
   }
