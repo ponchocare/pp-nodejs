@@ -1,9 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
+const makeGetRequestMock = vi.hoisted(() => vi.fn());
 const makePostRequestMock = vi.hoisted(() => vi.fn());
 const makePutRequestMock = vi.hoisted(() => vi.fn());
 const apiMock = vi.hoisted(() =>
   vi.fn().mockReturnValue({
+    makeGetRequest: makeGetRequestMock,
     makePostRequest: makePostRequestMock,
     makePutRequest: makePutRequestMock,
   }),
@@ -38,6 +40,41 @@ describe('Client', () => {
     });
   });
 
+  describe('validateLocationUrn', () => {
+    it('queries the server to know if a location is able to process payments', async () => {
+      const response = new Response('{"payment":1234}', { status: 200 });
+      makeGetRequestMock.mockResolvedValueOnce(response);
+
+      const client = new Client(key);
+      const data = await client.validateLocationUrn({ urn, email });
+
+      expect(data).toStrictEqual({ payment: 1234 });
+      expect(makeGetRequestMock).toHaveBeenCalledWith(
+        '/api/integration/validate',
+        { Authorization: authorization },
+      );
+      expect(makePostRequestMock).not.toHaveBeenCalled();
+      expect(makePutRequestMock).not.toHaveBeenCalled();
+    });
+
+    it('fails validation if the response from the server is not satisfactory', async () => {
+      const response = new Response(undefined, { status: 401 });
+      makeGetRequestMock.mockResolvedValueOnce(response);
+
+      const client = new Client(key);
+      await expect(
+        client.validateLocationUrn({ urn, email }),
+      ).rejects.toThrowError(PPError);
+
+      expect(makeGetRequestMock).toHaveBeenCalledWith(
+        '/api/integration/validate',
+        { Authorization: authorization },
+      );
+      expect(makePostRequestMock).not.toHaveBeenCalled();
+      expect(makePutRequestMock).not.toHaveBeenCalled();
+    });
+  });
+
   describe('initiatePayment', () => {
     const token = 'ytfBNCiHCbU/WdEZ1yEB60DsMpgD7VgR0SSqgJhj0mY=';
     const defaults = { metadata: 'order-1234', urn, amount: 1234, email };
@@ -54,6 +91,7 @@ describe('Client', () => {
         {},
         serialise({ ...defaults, token }),
       );
+      expect(makeGetRequestMock).not.toHaveBeenCalled();
       expect(makePutRequestMock).not.toHaveBeenCalled();
     });
 
@@ -73,6 +111,7 @@ describe('Client', () => {
         {},
         serialise({ ...data, token }),
       );
+      expect(makeGetRequestMock).not.toHaveBeenCalled();
       expect(makePutRequestMock).not.toHaveBeenCalled();
     });
 
@@ -89,6 +128,7 @@ describe('Client', () => {
         {},
         serialise({ ...data, token }),
       );
+      expect(makeGetRequestMock).not.toHaveBeenCalled();
       expect(makePutRequestMock).not.toHaveBeenCalled();
     });
 
@@ -105,6 +145,7 @@ describe('Client', () => {
         {},
         serialise({ ...data, token }),
       );
+      expect(makeGetRequestMock).not.toHaveBeenCalled();
       expect(makePutRequestMock).not.toHaveBeenCalled();
     });
 
@@ -122,6 +163,7 @@ describe('Client', () => {
         {},
         serialise({ ...defaults, token }),
       );
+      expect(makeGetRequestMock).not.toHaveBeenCalled();
       expect(makePutRequestMock).not.toHaveBeenCalled();
     });
   });
@@ -153,6 +195,7 @@ describe('Client', () => {
         {},
         serialise({ ...defaults, token }),
       );
+      expect(makeGetRequestMock).not.toHaveBeenCalled();
       expect(makePutRequestMock).not.toHaveBeenCalled();
     });
 
@@ -174,6 +217,7 @@ describe('Client', () => {
         {},
         serialise({ ...data, token }),
       );
+      expect(makeGetRequestMock).not.toHaveBeenCalled();
       expect(makePutRequestMock).not.toHaveBeenCalled();
     });
 
@@ -195,6 +239,7 @@ describe('Client', () => {
         {},
         serialise({ ...data, token }),
       );
+      expect(makeGetRequestMock).not.toHaveBeenCalled();
       expect(makePutRequestMock).not.toHaveBeenCalled();
     });
 
@@ -219,6 +264,7 @@ describe('Client', () => {
         {},
         serialise({ ...data, token }),
       );
+      expect(makeGetRequestMock).not.toHaveBeenCalled();
       expect(makePutRequestMock).not.toHaveBeenCalled();
     });
 
@@ -236,6 +282,7 @@ describe('Client', () => {
         {},
         serialise({ ...defaults, token }),
       );
+      expect(makeGetRequestMock).not.toHaveBeenCalled();
       expect(makePutRequestMock).not.toHaveBeenCalled();
     });
   });
@@ -255,6 +302,7 @@ describe('Client', () => {
         { Authorization: authorization },
         serialise(data),
       );
+      expect(makeGetRequestMock).not.toHaveBeenCalled();
       expect(makePostRequestMock).not.toHaveBeenCalled();
     });
 
@@ -276,6 +324,7 @@ describe('Client', () => {
         { Authorization: authorization },
         serialise(data),
       );
+      expect(makeGetRequestMock).not.toHaveBeenCalled();
       expect(makePostRequestMock).not.toHaveBeenCalled();
     });
 
@@ -295,6 +344,7 @@ describe('Client', () => {
         { Authorization: authorization },
         serialise(data),
       );
+      expect(makeGetRequestMock).not.toHaveBeenCalled();
       expect(makePostRequestMock).not.toHaveBeenCalled();
     });
   });
@@ -314,6 +364,7 @@ describe('Client', () => {
         { Authorization: authorization },
         serialise(data),
       );
+      expect(makeGetRequestMock).not.toHaveBeenCalled();
       expect(makePostRequestMock).not.toHaveBeenCalled();
     });
 
@@ -333,6 +384,7 @@ describe('Client', () => {
         { Authorization: authorization },
         serialise(data),
       );
+      expect(makeGetRequestMock).not.toHaveBeenCalled();
       expect(makePostRequestMock).not.toHaveBeenCalled();
     });
   });
@@ -350,6 +402,7 @@ describe('Client', () => {
         { Authorization: authorization },
         serialise({}),
       );
+      expect(makeGetRequestMock).not.toHaveBeenCalled();
       expect(makePostRequestMock).not.toHaveBeenCalled();
     });
 
@@ -367,6 +420,7 @@ describe('Client', () => {
         { Authorization: authorization },
         serialise({}),
       );
+      expect(makeGetRequestMock).not.toHaveBeenCalled();
       expect(makePostRequestMock).not.toHaveBeenCalled();
     });
   });
@@ -384,6 +438,7 @@ describe('Client', () => {
         { Authorization: authorization },
         serialise({}),
       );
+      expect(makeGetRequestMock).not.toHaveBeenCalled();
       expect(makePostRequestMock).not.toHaveBeenCalled();
     });
 
@@ -401,6 +456,7 @@ describe('Client', () => {
         { Authorization: authorization },
         serialise({}),
       );
+      expect(makeGetRequestMock).not.toHaveBeenCalled();
       expect(makePostRequestMock).not.toHaveBeenCalled();
     });
   });
