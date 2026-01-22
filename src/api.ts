@@ -19,29 +19,40 @@ export class Api {
     };
   }
 
-  public async makePostRequest(
+  private async makeRequest(
+    method: string,
     path: string,
     headers: HeadersInit,
-    body: string,
+    body?: string,
   ): Promise<Response> {
     return await fetch(this.getUrl(path), {
-      method: 'post',
+      method,
       headers: { ...headers, ...this.getHeaders() },
       body,
       redirect: 'manual',
     });
   }
 
-  public async makePutRequest(
-    url: string,
+  public async makeGetRequest(
+    path: string,
+    headers: HeadersInit,
+  ): Promise<Response> {
+    return await this.makeRequest('get', path, headers);
+  }
+
+  public async makePostRequest(
+    path: string,
     headers: HeadersInit,
     body: string,
   ): Promise<Response> {
-    return await fetch(this.getUrl(url), {
-      method: 'put',
-      headers: { ...headers, ...this.getHeaders() },
-      body,
-      redirect: 'manual',
-    });
+    return await this.makeRequest('post', path, headers, body);
+  }
+
+  public async makePutRequest(
+    path: string,
+    headers: HeadersInit,
+    body: string,
+  ): Promise<Response> {
+    return await this.makeRequest('put', path, headers, body);
   }
 }
