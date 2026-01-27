@@ -32,3 +32,35 @@ export async function createJWT(
     .setExpirationTime('5s')
     .sign(sha256(key));
 }
+
+/**
+ * Verifies that a request from Poncho does indeed come from Poncho
+ * and hasn't been tampered in any way
+ */
+export async function isValidCallback(
+  key: string,
+  request: Request,
+): Promise<boolean> {
+  const callback = request.clone();
+
+  const signature = callback.headers.get('signature') ?? randomUUID();
+  const payload = await callback.text();
+
+  return signature === sha256Hmac(key, payload).toString('base64url');
+}
+
+/**
+ * Securely parses a callback received from Poncho only if the callback
+ * is verified to come from Poncho
+ */
+export async function parseCallback<T = unknown>(
+  key: string,
+  request: Request,
+): Promise<T> {
+  const isValid = await isValidCallback(key, request);
+  if (!isValid) {
+    throw new PPError('Callback request failed the security signature');
+  }
+
+  return await request.clone().json();
+}

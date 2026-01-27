@@ -37,3 +37,48 @@ describe('createJWT', () => {
     });
   });
 });
+
+describe('isValidCallback', () => {
+  it('validates a callback with the integration key', async () => {
+    const request = new Request('http://server/endpoint', {
+      method: 'post',
+      headers: { signature: 'XUdedl8SQDqWNuxXvAkSAsXQ7nIzOwPg_f_De0PS2yM' },
+      body: '{some data}',
+    });
+
+    await expect(isValidCallback(key, request)).resolves.toBe(true);
+  });
+
+  it('does not validate a callback if the signature header is not set', async () => {
+    const request = new Request('http://server/endpoint', {
+      method: 'post',
+      body: '{some data}',
+    });
+
+    await expect(isValidCallback(key, request)).resolves.toBe(false);
+  });
+});
+
+describe('parseCallback', () => {
+  it('parses a callback with the integration key', async () => {
+    const request = new Request('http://server/endpoint', {
+      method: 'post',
+      headers: { signature: 'jbkD742hUPr8KhPmecQLqgDacPoQ8RKkmjp-Un8scM0' },
+      body: '{"payment":1234}',
+    });
+
+    await expect(parseCallback(key, request)).resolves.toStrictEqual({
+      payment: 1234,
+    });
+  });
+
+  it('throws an error is the callback is invalid', async () => {
+    const request = new Request('http://server/endpoint', {
+      method: 'post',
+      headers: { signature: 'invalid' },
+      body: '{"payment":1234}',
+    });
+
+    await expect(parseCallback(key, request)).rejects.toThrowError(PPError);
+  });
+});
