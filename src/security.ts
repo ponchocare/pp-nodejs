@@ -1,8 +1,13 @@
 import { SignJWT } from 'jose';
-import { createHash } from 'node:crypto';
+import { createHash, createHmac, randomUUID } from 'node:crypto';
+import { PPError } from './error.js';
 
 function sha256(data: string): Buffer {
   return createHash('sha256').update(data).digest();
+}
+
+function sha256Hmac(key: string, data: string): Buffer {
+  return createHmac('sha256', Buffer.from(key, 'utf8')).update(data).digest();
 }
 
 /**

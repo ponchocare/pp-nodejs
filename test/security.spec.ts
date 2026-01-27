@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { createToken, createJWT } from '../src';
 import { jwtVerify } from 'jose';
 import { serialise } from '../src/utils';
+import { isValidCallback, parseCallback } from '../src/security';
+import { PPError } from '../src/error';
 
 const urn = 'IUXfYEwc';
 const key = 'oIUjW4n39vKZXpNQJQALbEW9oQ69GUVmOx43J/+/o6SHLlM9kCAkgM0bdd9WjoX9';

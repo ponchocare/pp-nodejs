@@ -1,4 +1,4 @@
-import { createJWT, createToken } from './token.js';
+import { createJWT, createToken } from './security.js';
 import { PPError } from './error.js';
 import { Api } from './api.js';
 import { replaceParams, Serialisable, serialise } from './utils.js';
