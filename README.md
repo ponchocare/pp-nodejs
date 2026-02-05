@@ -17,8 +17,11 @@ You can also use your favourite package manger like `yarn` or `pnpm`.
 This package declares the following functions:
 - [createToken](https://github.com/ponchocare/pp-nodejs/blob/master/docs/token/createToken.md): This function allows the creation of tokens for the initialisation endpoints.
 - [createJWT](https://github.com/ponchocare/pp-nodejs/blob/master/docs/token/createJWT.md): This function allows the creation of JWTs for the payment manipulation endpoints.
+- [isValidCallback](https://github.com/ponchocare/pp-nodejs/blob/master/docs/token/isValidCallback.md): Verifies that a request from Poncho does indeed come from Poncho and hasn't been tampered in any way.
+- [parseCallback](https://github.com/ponchocare/pp-nodejs/blob/master/docs/token/parseCallback.md): Securely parses a callback received from Poncho only if the callback is verified to come from Poncho.
 
 And the `Client` class which provides the following methods:
+- [validateLocationUrn](https://github.com/ponchocare/pp-nodejs/blob/master/docs/client/validateLocationUrn.md): This method allows to validate a location to ensure it is ready to process payments.
 - [initiatePayment](https://github.com/ponchocare/pp-nodejs/blob/master/docs/client/initiatePayment.md): This method allows to initialise a payment in PonchoPay.
 - [initiateSubscription](https://github.com/ponchocare/pp-nodejs/blob/master/docs/client/initiateSubscription.md): This method allows to initialise a subscription in PonchoPay.
 - [updatePaymentMethod](https://github.com/ponchocare/pp-nodejs/blob/master/docs/client/updatePaymentMethod.md): This method allows to change the Payment Method properties.
