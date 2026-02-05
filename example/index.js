@@ -36,6 +36,32 @@ const metadata = JSON.stringify({ order: Math.floor(Math.random() * 1000) });
  * Let's create a payment!
  */
 const client = new Client(key, base);
+
+const {
+  verification_status,
+  card_payments_enabled,
+  childcare_voucher_payments_enabled,
+  tax_free_childcare_payments_enabled,
+} = await client.validateLocationUrn({ urn, email });
+console.log(`The location is ${verification_status ? '' : 'not '}verified`);
+console.log(
+  `The location can ${card_payments_enabled ? '' : 'not '}process card/bank payments`,
+);
+console.log(
+  `The location can ${childcare_voucher_payments_enabled ? '' : 'not '}process childcare voucher payments`,
+);
+console.log(
+  `The location can ${tax_free_childcare_payments_enabled ? '' : 'not '}process tax-free childcare payments`,
+);
+
+if (!verification_status) {
+  console.log('Unfortunately, the location is not ready to process payments.');
+  console.log(
+    "But don't worry, you can always let us know at help@ponchopay.com",
+  );
+  exit(1);
+}
+
 const payment = await client.initiatePayment({ amount, metadata, urn, email });
 
 console.log();

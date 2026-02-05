@@ -19,6 +19,7 @@ describe.each([
   beforeEach(() => fetchMock.mockClear());
 
   describe.each([
+    { method: 'get', fn: 'makeGetRequest' },
     { method: 'post', fn: 'makePostRequest' },
     { method: 'put', fn: 'makePutRequest' },
   ])('$fn', ({ method, fn }) => {
@@ -37,7 +38,7 @@ describe.each([
           'content-type': 'application/json',
           'x-telemetry': expect.any(String),
         },
-        body,
+        body: method === 'get' ? undefined : body,
         redirect: 'manual',
       });
     });

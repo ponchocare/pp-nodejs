@@ -75,6 +75,13 @@ type PaymentMethodRefund = JWTPayload & {
   amount: number;
 };
 
+type LocationStatus = {
+  verification_status: boolean;
+  card_payments_enabled: boolean;
+  childcare_voucher_payments_enabled: boolean;
+  tax_free_childcare_payments_enabled: boolean;
+};
+
 /**
  * PonchoPay client.
  * It collects the methods to manipulate payments in PonchoPay.
@@ -115,6 +122,24 @@ export class Client {
     );
   }
 
+  private async issueGetRequest<T>(
+    url: string,
+    { urn, email }: JWTPayload & Serialisable,
+  ): Promise<T> {
+    const jwt = await createJWT(urn, this.key, email, '');
+
+    const headers = { Authorization: `Bearer ${jwt}` };
+    const response = await this.api.makeGetRequest(url, headers);
+
+    if (response.status !== 200) {
+      throw new PPError(
+        `Unexpected response. Expected 200 as status code but ${response.status} was received.`,
+      );
+    }
+
+    return (await response.json()) as T;
+  }
+
   private async issuePutRequest(
     url: string,
     { urn, email, ...data }: JWTPayload & Serialisable,
@@ -130,6 +155,15 @@ export class Client {
         `Unexpected response. Expected 204 as status code but ${response.status} was received.`,
       );
     }
+  }
+
+  /**
+   * Validates whether a location is able to process payments
+   */
+  public async validateLocationUrn(
+    payload: JWTPayload,
+  ): Promise<LocationStatus> {
+    return await this.issueGetRequest('/api/integration/validate', payload);
   }
 
   /**
