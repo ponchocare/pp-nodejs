@@ -17,9 +17,16 @@ type BasePaymentInit = {
   constraints?: Constraints;
 };
 
+type LineItem = {
+  description: string;
+  amount: number;
+  quantity: number;
+};
+
 type PaymentInit = BasePaymentInit & {
   urn: string;
   email: string;
+  line_items?: LineItem[];
 };
 
 export enum Weekday {
