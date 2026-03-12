@@ -72,6 +72,39 @@ console.log('############################################################');
 console.log();
 
 /**
+ * To create a payment that supports Klarna, add line_items to initiatePayment.
+ * Note: The sum of all line items (amount × quantity) must equal the total payment amount.
+ *
+ */
+const paymentWithLineItems = await client.initiatePayment({
+  amount: 2034,
+  metadata,
+  urn,
+  email,
+  line_items: [
+    {
+      description: 'After-school club (1 week)',
+      amount: 1800,
+      quantity: 1,
+    },
+    {
+      description: 'Hot lunch and snacks',
+      amount: 234,
+      quantity: 1,
+    },
+  ],
+});
+
+console.log();
+console.log('############################################################');
+console.log(
+  'A payment that can be paid with Klarna has been generated. Please, go here to pay for it:',
+);
+console.log(paymentWithLineItems);
+console.log('############################################################');
+console.log();
+
+/**
  * Give some time to interact with the payment.
  */
 console.log('Press [ESC] to quit. Press any key to cancel the payment');
@@ -97,3 +130,15 @@ await client.cancelPayment(paymentId, { urn, email: 'cancel@author.com' });
 
 console.log();
 console.log('The payment has been successfully canceled!');
+
+/**
+ * Let's also cancel the Klarna payment.
+ */
+const klarnaPaymentId = paymentWithLineItems.match(/([^/]+)$/)[1];
+await client.cancelPayment(klarnaPaymentId, {
+  urn,
+  email: 'cancel@author.com',
+});
+
+console.log();
+console.log('The Klarna payment has also been successfully canceled!');
