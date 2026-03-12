@@ -38,7 +38,7 @@ PaymentInit:
 | note        | No        | string          | Any note to be attached to the payment                                    |
 | expiry      | No        | object / string | The date you want the payment to expire (Check `DateValue` details)       |
 | constraints | No        | object          | Constraints for the payment (Check `Constraints` details)                 |
-| line_items  | No        | object          | Send them if you intend to use klarna payments (Check `LineItem` details) |
+| line_items  | No        | LineItem[]      | Send them if you intend to use klarna payments (Check `LineItem` details) |
 
 DateValue:
 
@@ -52,7 +52,7 @@ Constraints:
 
 LineItem:
 
-An array of line items that describe the purchase. Needed when klarna payments are allowed. Ensure that the total of the line items matches the total of the payment.
+Describes a single line item in the purchase. Needed when klarna payments are allowed. Ensure that the total of the line items matches the total of the payment.
 
 | Parameter   | Mandatory | Type   | Description                          |
 | ----------- | --------- | ------ | ------------------------------------ |
