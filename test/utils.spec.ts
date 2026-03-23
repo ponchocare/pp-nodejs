@@ -47,13 +47,13 @@ describe('serialise', () => {
     expect(serialise({ key: record })).toBe('{"key":{"more":"values"}}');
   });
 
-  it('stringifies a record with line items array of objects', () => {
-    const line_items = [
-      { description: 'After-school club', amount: 1000, quantity: 1 },
-      { description: 'Hot lunch', amount: 234, quantity: 1 },
+  it('stringifies an array of objects', () => {
+    const array_of_objects = [
+      { key1: 'value 1', key2: 1000, key3: 1 },
+      { key1: 'value 2', key2: 234, key3: 1 },
     ];
-    expect(serialise({ line_items })).toBe(
-      '{"line_items":[{"description":"After-school club","amount":1000,"quantity":1},{"description":"Hot lunch","amount":234,"quantity":1}]}',
+    expect(serialise({ array_of_objects })).toBe(
+      '{"array_of_objects":[{"key1":"value 1","key2":1000,"key3":1},{"key1":"value 2","key2":234,"key3":1}]}',
     );
   });
 

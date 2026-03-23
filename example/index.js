@@ -62,22 +62,8 @@ if (!verification_status) {
   exit(1);
 }
 
-const payment = await client.initiatePayment({ amount, metadata, urn, email });
-
-console.log();
-console.log('############################################################');
-console.log('A payment has been generated. Please, go here to pay for it:');
-console.log(payment);
-console.log('############################################################');
-console.log();
-
-/**
- * To create a payment that supports Klarna, add line_items to initiatePayment.
- * Note: The sum of all line items (amount × quantity) must equal the total payment amount.
- *
- */
-const paymentWithLineItems = await client.initiatePayment({
-  amount: 2034,
+const payment = await client.initiatePayment({
+  amount,
   metadata,
   urn,
   email,
@@ -97,10 +83,8 @@ const paymentWithLineItems = await client.initiatePayment({
 
 console.log();
 console.log('############################################################');
-console.log(
-  'A payment that can be paid with Klarna has been generated. Please, go here to pay for it:',
-);
-console.log(paymentWithLineItems);
+console.log('A payment has been generated. Please, go here to pay for it:');
+console.log(payment);
 console.log('############################################################');
 console.log();
 
@@ -130,15 +114,3 @@ await client.cancelPayment(paymentId, { urn, email: 'cancel@author.com' });
 
 console.log();
 console.log('The payment has been successfully canceled!');
-
-/**
- * Let's also cancel the Klarna payment.
- */
-const klarnaPaymentId = paymentWithLineItems.match(/([^/]+)$/)[1];
-await client.cancelPayment(klarnaPaymentId, {
-  urn,
-  email: 'cancel@author.com',
-});
-
-console.log();
-console.log('The Klarna payment has also been successfully canceled!');

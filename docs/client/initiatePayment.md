@@ -29,16 +29,16 @@ Parameters:
 
 PaymentInit:
 
-| Parameter   | Mandatory | Type            | Description                                                               |
-| ----------- | --------- | --------------- | ------------------------------------------------------------------------- |
-| metadata    | Yes       | string          | Any string you want to keep attached to the payment                       |
-| urn         | Yes       | string          | The location Unique Reference Number                                      |
-| amount      | Yes       | number          | The payable amount in pences                                              |
-| email       | Yes       | string          | The user email                                                            |
-| note        | No        | string          | Any note to be attached to the payment                                    |
-| expiry      | No        | object / string | The date you want the payment to expire (Check `DateValue` details)       |
-| constraints | No        | object          | Constraints for the payment (Check `Constraints` details)                 |
-| line_items  | No        | LineItem[]      | Send them if you intend to use klarna payments (Check `LineItem` details) |
+| Parameter   | Mandatory | Type            | Description                                                         |
+| ----------- | --------- | --------------- | ------------------------------------------------------------------- |
+| metadata    | Yes       | string          | Any string you want to keep attached to the payment                 |
+| urn         | Yes       | string          | The location Unique Reference Number                                |
+| amount      | Yes       | number          | The payable amount in pences                                        |
+| email       | Yes       | string          | The user email                                                      |
+| note        | No        | string          | Any note to be attached to the payment                              |
+| expiry      | No        | object / string | The date you want the payment to expire (Check `DateValue` details) |
+| constraints | No        | object          | Constraints for the payment (Check `Constraints` details)           |
+| line_items  | No        | LineItem[]      | Array of products to pay for. (Check `LineItem` details)            |
 
 DateValue:
 
@@ -52,7 +52,7 @@ Constraints:
 
 LineItem:
 
-Describes a single line item in the purchase. Needed when klarna payments are allowed. Ensure that the total of the line items matches the total of the payment.
+Describes a single line item in the purchase. Ensure that the total of the line items match the total of the payment.
 
 | Parameter   | Mandatory | Type   | Description                          |
 | ----------- | --------- | ------ | ------------------------------------ |
