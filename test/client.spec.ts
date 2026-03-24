@@ -149,6 +149,26 @@ describe('Client', () => {
       expect(makePutRequestMock).not.toHaveBeenCalled();
     });
 
+    it('initiates a payment with line items', async () => {
+      const response = Response.redirect(location, 302);
+      makePostRequestMock.mockResolvedValueOnce(response);
+
+      const client = new Client(key);
+
+      const data = {
+        ...defaults,
+        line_items: [{ description: 'item 1', amount: 1234, quantity: 1 }],
+      };
+      await expect(client.initiatePayment(data)).resolves.toBe(location);
+      expect(makePostRequestMock).toHaveBeenCalledWith(
+        '/api/integration/generic/initiate',
+        {},
+        serialise({ ...data, token }),
+      );
+      expect(makeGetRequestMock).not.toHaveBeenCalled();
+      expect(makePutRequestMock).not.toHaveBeenCalled();
+    });
+
     it('fails if the response from the server is not a redirect', async () => {
       const response = new Response('all good?', { status: 200 });
       makePostRequestMock.mockResolvedValueOnce(response);
