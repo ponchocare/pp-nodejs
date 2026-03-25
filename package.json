@@ -1,6 +1,6 @@
 {
   "name": "@ponchopay/pp-nodejs",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Tools to integrate PonchoPay on NodeJS",
   "type": "module",
   "main": "dist/src/index.js",
