@@ -1,3 +1,6 @@
+import { createHash, createHmac } from 'node:crypto';
+import { PPError } from './error';
+
 type SerialisableValue =
   | string
   | number
@@ -9,62 +12,78 @@ type SerialisableValue =
 export type Serialisable = Record<string, SerialisableValue>;
 
 /**
- * Clears the start of the string from any matching character
+ * Generates a simple SHA256 hash for a given string.
+ *
+ * @param data the input data to hash
+ *
+ * @return the base64 encoded SHA256 hash
  */
-function trimStart(haystack: string, needle: string): string {
-  const regex = new RegExp(`^[${needle}]+`);
-  return haystack.replace(regex, '');
+export function sha256(data: string): string {
+  return createHash('sha256').update(data).digest().toString('base64');
 }
 
 /**
- * Clears the end of the string from any matching character
+ * Generates a HMAC-SHA256 hash using a secret key and the provided data.
+ *
+ * @param key  the secret key used for HMAC generation
+ * @param data the data to generate the HMAC hash for
+ *
+ * @return the base64 encoded HMAC-SHA256 hash
  */
-function trimEnd(haystack: string, needle: string): string {
-  const regex = new RegExp(`[${needle}]+$`);
-  return haystack.replace(regex, '');
+export function sha256Hmac(key: string, data: string): string {
+  return createHmac('sha256', Buffer.from(key, 'utf8'))
+    .update(data)
+    .digest()
+    .toString('base64');
 }
 
 /**
- * Joins two paths with a single forward slash in the middle
+ * Joins two URL paths in a manner that correctly handles leading and trailing slashes.
+ *
+ * @param left  the initial part of the path
+ * @param right the subsequent part of the path
+ *
+ * @return the correctly concatenated path
  */
 export function joinPaths(left: string, right: string): string {
-  return trimEnd(left, '/') + '/' + trimStart(right, '/');
+  const trimmedLeft = left.replace(new RegExp(`[/]+$`), '');
+  const trimmedRight = right.replace(new RegExp(`^[/]+`), '');
+
+  return `${trimmedLeft}/${trimmedRight}`;
 }
 
 /**
- * Ensures the value will be serialised correctly
- */
-function prepareForSerialisation(
-  value: SerialisableValue,
-): Exclude<SerialisableValue, Set<SerialisableValue>> {
-  if (Array.isArray(value)) {
-    return value.map(prepareForSerialisation);
-  }
-
-  if (value instanceof Set) {
-    return prepareForSerialisation(Array.from(value));
-  }
-
-  if (typeof value === 'object' && !(value instanceof Date)) {
-    return Object.fromEntries(
-      Object.entries(value).map(([key, item]) => [
-        key,
-        prepareForSerialisation(item),
-      ]),
-    );
-  }
-
-  return value;
-}
-
-/**
- * JSON-stringifies a record.
+ * Serializes a data structure into a JSON string format. It handles serialization
+ * of objects like Date by converting them to an ISO 8601 string.
  *
- * This method enforces the following rules:
- * - If the record does not have key/value pairs, it returns empty string
- * - Any Set is flatten out to a simple array
+ * @param data the data to serialize
+ *
+ * @return the resulting JSON string
  */
 export function serialise(data: Serialisable): string {
+  function prepareForSerialisation(
+    value: SerialisableValue,
+  ): Exclude<SerialisableValue, Set<SerialisableValue>> {
+    if (Array.isArray(value)) {
+      return value.map(prepareForSerialisation);
+    }
+
+    if (value instanceof Set) {
+      return prepareForSerialisation(Array.from(value));
+    }
+
+    if (typeof value === 'object' && !(value instanceof Date)) {
+      return Object.fromEntries(
+        Object.entries(value).map(([key, item]) => [
+          key,
+          prepareForSerialisation(item),
+        ]),
+      );
+    }
+
+    return value;
+  }
+
   if (Object.keys(data).length === 0) {
     return '';
   }
@@ -73,7 +92,34 @@ export function serialise(data: Serialisable): string {
 }
 
 /**
- * Replaces any occurrence of [param] in the haystack with the corresponding value from params
+ * Deserializes a JSON string into a PHP object, performing basic validation checks.
+ *
+ * @param data the JSON string to decode
+ *
+ * @return the resulting PHP object
+ */
+export function deserialise<T extends object>(data: string): T {
+  let deserialised: T;
+  try {
+    deserialised = JSON.parse(data);
+  } catch {
+    throw new PPError('Unexpected JSON value.');
+  }
+
+  if (deserialised?.constructor === Object) {
+    return deserialised;
+  }
+
+  throw new PPError('Unexpected JSON value.');
+}
+
+/**
+ * Replaces placeholders in a path string (e.g., `[param]`) with actual values from an array.
+ *
+ * @param haystack the string containing placeholders
+ * @param params   an associative array mapping placeholder names to replacement values
+ *
+ * @return string the path with all specified parameters correctly replaced
  */
 export function replaceParams(
   haystack: string,
@@ -86,8 +132,9 @@ export function replaceParams(
 }
 
 /**
- * Returns some anonymous environment parameters.
- * Those values are used to improve the service.
+ * Collects system and package version information to be used for telemetry tracking.
+ *
+ * @return an array containing package and environment details
  */
 export function telemetry(): Record<string, SerialisableValue> {
   const { arch, platform, version } = process;
