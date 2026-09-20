@@ -17,8 +17,6 @@ You can also use your favourite package manger like `yarn` or `pnpm`.
 This package declares the following functions:
 - [createToken](https://github.com/ponchocare/pp-nodejs/blob/master/docs/token/createToken.md): This function allows the creation of tokens for the initialisation endpoints.
 - [createJWT](https://github.com/ponchocare/pp-nodejs/blob/master/docs/token/createJWT.md): This function allows the creation of JWTs for the payment manipulation endpoints.
-- [isValidCallback](https://github.com/ponchocare/pp-nodejs/blob/master/docs/token/isValidCallback.md): Verifies that a request from Poncho does indeed come from Poncho and hasn't been tampered in any way.
-- [parseCallback](https://github.com/ponchocare/pp-nodejs/blob/master/docs/token/parseCallback.md): Securely parses a callback received from Poncho only if the callback is verified to come from Poncho.
 
 And the `Client` class which provides the following methods:
 - [validateLocationUrn](https://github.com/ponchocare/pp-nodejs/blob/master/docs/client/validateLocationUrn.md): This method allows to validate a location to ensure it is ready to process payments.
@@ -28,6 +26,10 @@ And the `Client` class which provides the following methods:
 - [refundPaymentMethod](https://github.com/ponchocare/pp-nodejs/blob/master/docs/client/refundPaymentMethod.md): This method allows to fully or partially refund a Payment Method.
 - [cancelPayment](https://github.com/ponchocare/pp-nodejs/blob/master/docs/client/cancelPayment.md): This method allows to cancel a Payment.
 - [cancelRecursion](https://github.com/ponchocare/pp-nodejs/blob/master/docs/client/cancelRecursion.md): This method allows to cancel a Recurring Payment.
+- [isValidCallback](https://github.com/ponchocare/pp-nodejs/blob/master/docs/client/isValidCallback.md): This method allows to validate a callback received from PonchoPay.
+- [isValidRequest](https://github.com/ponchocare/pp-nodejs/blob/master/docs/client/isValidRequest.md): This method allows to validate a request received from PonchoPay.
+- [parsedCallback](https://github.com/ponchocare/pp-nodejs/blob/master/docs/client/parseCallback.md): This method allows to parse a callback received from PonchoPay.
+- [parseRequest](https://github.com/ponchocare/pp-nodejs/blob/master/docs/client/parseRequest.md): This method allows to parse a request received from PonchoPay.
 
 ## Development
 
