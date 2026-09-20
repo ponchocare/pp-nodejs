@@ -6,8 +6,8 @@ import { joinPaths, serialise, telemetry } from './utils.js';
  * and configuring necessary default settings.
  */
 export class Api {
-  private base: string;
-  private headers: HeadersInit;
+  private readonly base: string;
+  private readonly headers: HeadersInit;
 
   /**
    * @param base    The base URL for the API endpoint
