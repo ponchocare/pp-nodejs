@@ -483,4 +483,164 @@ describe('Client', () => {
       expect(makePostRequestMock).not.toHaveBeenCalled();
     });
   });
+
+  describe('isValidCallback', () => {
+    it('knows when a callback is valid', () => {
+      const signature = 'kyXg6pqvt0Bp+In62Z+mwgKkkuk2FhsvagjNTMuWdAs=';
+      const payload = '{some json data}';
+
+      const client = new Client(key);
+      expect(client.isValidCallback(signature, payload)).toBeTruthy();
+    });
+
+    it('knows when a callback is invalid', () => {
+      const signature = 'invalid signature';
+      const payload = '{some json data}';
+
+      const client = new Client(key);
+      expect(client.isValidCallback(signature, payload)).toBeFalsy();
+    });
+  });
+
+  describe('isValidRequest', () => {
+    it('knows when a request is valid', async () => {
+      const request = new Request('http://some/url', {
+        method: 'POST',
+        headers: { signature: 'kyXg6pqvt0Bp+In62Z+mwgKkkuk2FhsvagjNTMuWdAs=' },
+        body: '{some json data}',
+      });
+
+      const client = new Client(key);
+      await expect(client.isValidRequest(request)).resolves.toBeTruthy();
+    });
+
+    it('knows when a request is invalid', async () => {
+      const request = new Request('http://some/url', {
+        method: 'POST',
+        headers: { signature: 'invalid signature' },
+        body: '{some json data}',
+      });
+
+      const client = new Client(key);
+      await expect(client.isValidRequest(request)).resolves.toBeFalsy();
+    });
+
+    it('fails for requests without a signature header', async () => {
+      const request = new Request('http://some/url', {
+        method: 'POST',
+        body: '{some json data}',
+      });
+
+      const client = new Client(key);
+      await expect(client.isValidRequest(request)).rejects.toThrowError(
+        PPError,
+      );
+    });
+  });
+
+  describe('parseCallback', () => {
+    it('parses a valid callback', () => {
+      const signature = 'NsWFQ5SNr69U+uON7MeDI24edDJO+xEHs74fqAV/+k0=';
+      const payload = '{"some":"json"}';
+
+      const client = new Client(key);
+      const result = client.parseCallback(signature, payload);
+      expect(result).toEqual({ some: 'json' });
+    });
+
+    it('fails to parse a callback with an invalid signature', () => {
+      const signature = 'invalid signature';
+      const payload = '{"some":"json"}';
+
+      const client = new Client(key);
+      expect(() => client.parseCallback(signature, payload)).toThrowError(
+        PPError,
+      );
+    });
+
+    it('fails to parse a callback with an invalid json', () => {
+      const signature = 'kyXg6pqvt0Bp+In62Z+mwgKkkuk2FhsvagjNTMuWdAs=';
+      const payload = '{some json data}';
+
+      const client = new Client(key);
+      expect(() => client.parseCallback(signature, payload)).toThrowError(
+        PPError,
+      );
+    });
+
+    it('fails to parse a callback with a json not representing an object', () => {
+      const signature = 'G+Fo4rc8YCAb948EySsV5frTduX1vIbzeKDKmc1ZSSY=';
+      const payload = '[1,2,3]';
+
+      const client = new Client(key);
+      expect(() => client.parseCallback(signature, payload)).toThrowError(
+        PPError,
+      );
+    });
+  });
+
+  describe('parseRequest', () => {
+    it('parses a valid request', async () => {
+      const request = new Request('http://some/url', {
+        method: 'POST',
+        headers: { signature: 'NsWFQ5SNr69U+uON7MeDI24edDJO+xEHs74fqAV/+k0=' },
+        body: '{"some":"json"}',
+      });
+
+      const client = new Client(key);
+      const result = await client.parseRequest(request);
+      expect(result).toEqual({ some: 'json' });
+    });
+
+    it('fails to parse a request with an invalid signature', async () => {
+      const request = new Request('http://some/url', {
+        method: 'POST',
+        headers: { signature: 'invalid signature' },
+        body: '{"some":"json"}',
+      });
+
+      const client = new Client(key);
+      await expect(() => client.parseRequest(request)).rejects.toThrowError(
+        PPError,
+      );
+    });
+
+    it('fails to parse a request with an invalid json', async () => {
+      const request = new Request('http://some/url', {
+        method: 'POST',
+        headers: { signature: 'kyXg6pqvt0Bp+In62Z+mwgKkkuk2FhsvagjNTMuWdAs=' },
+        body: '{some json data}',
+      });
+
+      const client = new Client(key);
+      await expect(() => client.parseRequest(request)).rejects.toThrowError(
+        PPError,
+      );
+    });
+
+    it('fails to parse a request with a json not representing an object', async () => {
+      const request = new Request('http://some/url', {
+        method: 'POST',
+        headers: { signature: 'G+Fo4rc8YCAb948EySsV5frTduX1vIbzeKDKmc1ZSSY=' },
+        body: '[1,2,3]',
+      });
+
+      const client = new Client(key);
+      await expect(() => client.parseRequest(request)).rejects.toThrowError(
+        PPError,
+      );
+    });
+
+    it('fails to parse a request without a signature header', async () => {
+      const request = new Request('http://some/url', {
+        method: 'POST',
+        body: '{"some":"json"}',
+      });
+
+      const client = new Client(key);
+      await expect(() => client.parseRequest(request)).rejects.toThrowError(
+        PPError,
+      );
+    });
+  });
 });
