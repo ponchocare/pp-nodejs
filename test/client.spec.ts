@@ -12,9 +12,10 @@ const apiMock = vi.hoisted(() =>
 );
 vi.mock('../src/api', () => ({ Api: apiMock }));
 
-import { Client, Weekday, PaymentMethodType } from '../src/client';
+import { Client } from '../src/client';
 import { serialise } from '../src/utils';
 import { PPError } from '../src/error';
+import { PaymentMethodType, Weekday } from '../src/types';
 
 const urn = 'IUpGPArQ';
 const email = 'help@ponchopay.com';
