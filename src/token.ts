@@ -1,5 +1,5 @@
 import { SignJWT } from 'jose';
-import { sha256 } from './utils';
+import { sha256 } from './utils.js';
 import { createHash } from 'node:crypto';
 
 /**
