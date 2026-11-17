@@ -1,5 +1,5 @@
 import { createHash, createHmac } from 'node:crypto';
-import { PPError } from './error';
+import { PPError } from './error.js';
 
 type SerialisableValue =
   | string
