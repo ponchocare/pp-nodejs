@@ -4,11 +4,13 @@ const makeGetRequestMock = vi.hoisted(() => vi.fn());
 const makePostRequestMock = vi.hoisted(() => vi.fn());
 const makePutRequestMock = vi.hoisted(() => vi.fn());
 const apiMock = vi.hoisted(() =>
-  vi.fn().mockReturnValue({
-    makeGetRequest: makeGetRequestMock,
-    makePostRequest: makePostRequestMock,
-    makePutRequest: makePutRequestMock,
-  }),
+  vi.fn().mockImplementation(
+    class {
+      makeGetRequest = makeGetRequestMock;
+      makePostRequest = makePostRequestMock;
+      makePutRequest = makePutRequestMock;
+    },
+  ),
 );
 vi.mock('../src/api', () => ({ Api: apiMock }));
 
