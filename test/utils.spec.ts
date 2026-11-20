@@ -1,5 +1,30 @@
 import { describe, expect, it } from 'vitest';
-import { joinPaths, replaceParams, serialise, telemetry } from '../src/utils';
+import {
+  deserialise,
+  joinPaths,
+  replaceParams,
+  serialise,
+  sha256,
+  sha256Hmac,
+  telemetry,
+} from '../src/utils';
+import { PPError } from '../src/error';
+
+describe('sha256', () => {
+  it('calculates the SHA256 hash of some string', () => {
+    expect(sha256('hello')).toBe(
+      'LPJNul+wow4m6DsqxbninhsWHlwfp0JecwQzYpOLmCQ=',
+    );
+  });
+});
+
+describe('sha256Hmac', () => {
+  it('calculates the HMAC SHA256 hash of some string', () => {
+    expect(sha256Hmac('secret', 'hello')).toBe(
+      'iKqz7ejTrflNJquQ07r9SiCDBww7zOnAFO4EpEOEfAs=',
+    );
+  });
+});
 
 describe('joinPaths', () => {
   it('joins two paths adding a forward slash in the middle', () => {
@@ -59,6 +84,20 @@ describe('serialise', () => {
 
   it('stringifies an empty record as an empty string', () => {
     expect(serialise({})).toBe('');
+  });
+});
+
+describe('deserialise', () => {
+  it('deserialises a JSON string representing an object', () => {
+    expect(deserialise('{"key":"value"}')).toEqual({ key: 'value' });
+  });
+
+  it('throws an error for invalid JSON strings', () => {
+    expect(() => deserialise('{abc}')).toThrowError(PPError);
+  });
+
+  it('throws an error if the deserialised data is not an object', () => {
+    expect(() => deserialise('[1,2,3]')).toThrowError(PPError);
   });
 });
 
