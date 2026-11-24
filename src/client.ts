@@ -164,7 +164,7 @@ export class Client {
    */
   public async initiateSubscription(init: SubscriptionInit): Promise<string> {
     return await this.getRedirectLocation(
-      '/api/integration/generic/subscription',
+      '/api/integration/generic/subscription/redirect',
       init,
     );
   }
