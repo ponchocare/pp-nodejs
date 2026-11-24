@@ -214,7 +214,7 @@ describe('Client', () => {
 
       expect(subscription).toBe(location);
       expect(makePostRequestMock).toHaveBeenCalledWith(
-        '/api/integration/generic/subscription',
+        '/api/integration/generic/subscription/redirect',
         {},
         serialise({ ...defaults, token }),
       );
@@ -236,7 +236,7 @@ describe('Client', () => {
 
       expect(subscription).toBe(location);
       expect(makePostRequestMock).toHaveBeenCalledWith(
-        '/api/integration/generic/subscription',
+        '/api/integration/generic/subscription/redirect',
         {},
         serialise({ ...data, token }),
       );
@@ -258,7 +258,7 @@ describe('Client', () => {
 
       expect(subscription).toBe(location);
       expect(makePostRequestMock).toHaveBeenCalledWith(
-        '/api/integration/generic/subscription',
+        '/api/integration/generic/subscription/redirect',
         {},
         serialise({ ...data, token }),
       );
@@ -283,7 +283,7 @@ describe('Client', () => {
 
       expect(subscription).toBe(location);
       expect(makePostRequestMock).toHaveBeenCalledWith(
-        '/api/integration/generic/subscription',
+        '/api/integration/generic/subscription/redirect',
         {},
         serialise({ ...data, token }),
       );
@@ -301,7 +301,7 @@ describe('Client', () => {
         client.initiateSubscription(defaults),
       ).rejects.toBeInstanceOf(PPError);
       expect(makePostRequestMock).toHaveBeenCalledWith(
-        '/api/integration/generic/subscription',
+        '/api/integration/generic/subscription/redirect',
         {},
         serialise({ ...defaults, token }),
       );
