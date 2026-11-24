@@ -92,11 +92,13 @@ export function serialise(data: Serialisable): string {
 }
 
 /**
- * Deserializes a JSON string into a PHP object, performing basic validation checks.
+ * Deserialises a JSON string into a plain object, ensuring the top-level value is a JSON object.
  *
  * @param data the JSON string to decode
  *
- * @return the resulting PHP object
+ * @return the resulting plain object
+ *
+ * @throws PPError if the string is not valid JSON or is not a JSON object
  */
 export function deserialise<T extends object>(data: string): T {
   let deserialised: T;
@@ -114,12 +116,12 @@ export function deserialise<T extends object>(data: string): T {
 }
 
 /**
- * Replaces placeholders in a path string (e.g., `[param]`) with actual values from an array.
+ * Replaces placeholders in a path string (e.g., `[param]`) with actual values from a record.
  *
  * @param haystack the string containing placeholders
- * @param params   an associative array mapping placeholder names to replacement values
+ * @param params   a record mapping placeholder names to replacement values
  *
- * @return string the path with all specified parameters correctly replaced
+ * @return the path with all specified parameters correctly replaced
  */
 export function replaceParams(
   haystack: string,
@@ -134,7 +136,7 @@ export function replaceParams(
 /**
  * Collects system and package version information to be used for telemetry tracking.
  *
- * @return an array containing package and environment details
+ * @return a record containing package and environment details
  */
 export function telemetry(): Record<string, SerialisableValue> {
   const { arch, platform, version } = process;

@@ -500,6 +500,14 @@ describe('Client', () => {
       const client = new Client(key);
       expect(client.isValidCallback(signature, payload)).toBeFalsy();
     });
+
+    it('knows when a same-length callback signature is invalid', () => {
+      const signature = 'NsWFQ5SNr69U+uON7MeDI24edDJO+xEHs74fqAV/+k0=';
+      const payload = '{some json data}';
+
+      const client = new Client(key);
+      expect(client.isValidCallback(signature, payload)).toBeFalsy();
+    });
   });
 
   describe('isValidRequest', () => {
