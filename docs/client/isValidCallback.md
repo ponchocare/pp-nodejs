@@ -18,7 +18,7 @@ client.isValidCallback(signature, payload);
 Declaration:
 
 ```ts
-client.isValidCallback(signature: string, payload: string): bool;
+client.isValidCallback(signature: string, payload: string): boolean;
 ```
 
 Parameters:

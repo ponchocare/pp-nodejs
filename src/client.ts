@@ -1,3 +1,4 @@
+import { timingSafeEqual } from 'node:crypto';
 import { createJWT, createToken } from './token.js';
 import { PPError } from './error.js';
 import { Api } from './api.js';
@@ -43,7 +44,7 @@ export class Client {
    * It consumes endpoints returning redirection URLs. This method extracts the returned redirection.
    *
    * @param url  the API endpoint URL to initiate the redirect process
-   * @param data the array of initial payment data to be sent
+   * @param data the initial payment data to be sent
    *
    * @return the final redirect URL obtained from the API response headers
    */
@@ -262,7 +263,12 @@ export class Client {
    * @return returns `true` if the signature matches the generated hash, `false` otherwise
    */
   public isValidCallback(signature: string, payload: string): boolean {
-    return signature === sha256Hmac(this.key, payload);
+    const expected = Buffer.from(sha256Hmac(this.key, payload), 'utf8');
+    const received = Buffer.from(signature, 'utf8');
+
+    return (
+      received.length === expected.length && timingSafeEqual(received, expected)
+    );
   }
 
   /**

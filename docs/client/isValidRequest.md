@@ -18,7 +18,7 @@ await client.isValidRequest(request);
 Declaration:
 
 ```ts
-client.isValidRequest(request: Request): Promise<bool>;
+client.isValidRequest(request: Request): Promise<boolean>;
 ```
 
 Parameters:
