@@ -4,10 +4,12 @@ const makeGetRequestMock = vi.hoisted(() => vi.fn());
 const makePostRequestMock = vi.hoisted(() => vi.fn());
 const makePutRequestMock = vi.hoisted(() => vi.fn());
 const apiMock = vi.hoisted(() =>
-  vi.fn().mockReturnValue({
-    makeGetRequest: makeGetRequestMock,
-    makePostRequest: makePostRequestMock,
-    makePutRequest: makePutRequestMock,
+  vi.fn().mockImplementation(function () {
+    return {
+      makeGetRequest: makeGetRequestMock,
+      makePostRequest: makePostRequestMock,
+      makePutRequest: makePutRequestMock,
+    };
   }),
 );
 vi.mock('../src/api', () => ({ Api: apiMock }));
@@ -212,7 +214,7 @@ describe('Client', () => {
 
       expect(subscription).toBe(location);
       expect(makePostRequestMock).toHaveBeenCalledWith(
-        '/api/integration/generic/subscription',
+        '/api/integration/generic/subscription/redirect',
         {},
         serialise({ ...defaults, token }),
       );
@@ -234,7 +236,7 @@ describe('Client', () => {
 
       expect(subscription).toBe(location);
       expect(makePostRequestMock).toHaveBeenCalledWith(
-        '/api/integration/generic/subscription',
+        '/api/integration/generic/subscription/redirect',
         {},
         serialise({ ...data, token }),
       );
@@ -256,7 +258,7 @@ describe('Client', () => {
 
       expect(subscription).toBe(location);
       expect(makePostRequestMock).toHaveBeenCalledWith(
-        '/api/integration/generic/subscription',
+        '/api/integration/generic/subscription/redirect',
         {},
         serialise({ ...data, token }),
       );
@@ -281,7 +283,7 @@ describe('Client', () => {
 
       expect(subscription).toBe(location);
       expect(makePostRequestMock).toHaveBeenCalledWith(
-        '/api/integration/generic/subscription',
+        '/api/integration/generic/subscription/redirect',
         {},
         serialise({ ...data, token }),
       );
@@ -299,7 +301,7 @@ describe('Client', () => {
         client.initiateSubscription(defaults),
       ).rejects.toBeInstanceOf(PPError);
       expect(makePostRequestMock).toHaveBeenCalledWith(
-        '/api/integration/generic/subscription',
+        '/api/integration/generic/subscription/redirect',
         {},
         serialise({ ...defaults, token }),
       );
