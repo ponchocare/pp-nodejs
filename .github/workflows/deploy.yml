@@ -1,0 +1,108 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release, as X.Y.Z. Leave empty for the next patch after the newest tag.'
+        required: false
+        default: ''
+
+# Never run two deploys at once: both would try to publish the same version.
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    name: CI
+    if: github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/ci.yml
+
+  release:
+    name: Release and publish
+    needs: ci
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write # create the release and its tag
+      id-token: write # npm trusted publishing (OIDC)
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0 # the version is worked out from the existing tags
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+
+      # Git tags are the source of truth for the version: nothing is committed
+      # back to main, so the version in package.json is only set on the runner.
+      # Only plain X.Y.Z tags count. To skip versions, push a bare tag or pass
+      # the `version` input.
+      - name: Work out the version
+        id: version
+        env:
+          REQUESTED: ${{ inputs.version }}
+        run: |
+          semver='^[0-9]+\.[0-9]+\.[0-9]+$'
+          last=$(git tag --list | grep -E "$semver" | sort -V | tail -n 1)
+          last=${last:-0.0.0}
+
+          if [ -n "$REQUESTED" ]; then
+            if ! [[ "$REQUESTED" =~ $semver ]]; then
+              echo "::error::The requested version '$REQUESTED' is not in X.Y.Z format"
+              exit 1
+            fi
+            newest=$(printf '%s\n%s\n' "$last" "$REQUESTED" | sort -V | tail -n 1)
+            if [ "$REQUESTED" = "$last" ] || [ "$newest" != "$REQUESTED" ]; then
+              echo "::error::The requested version $REQUESTED must be higher than the newest tag ($last)"
+              exit 1
+            fi
+            version="$REQUESTED"
+          else
+            IFS=. read -r major minor patch <<< "$last"
+            version="$major.$minor.$((patch + 1))"
+          fi
+
+          echo "Newest tag: $last. Releasing: $version"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      # Only on the runner: package.json keeps the 0.0.0-development
+      # placeholder in git. Must run before the build, because `npm run patch`
+      # reads the version from package.json into the telemetry header.
+      - name: Set the version in package.json
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: npm version "$VERSION" --no-git-tag-version --allow-same-version
+
+      # No package-lock.json in this repo (it is gitignored), so `npm ci` and
+      # setup-node's npm cache cannot be used.
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+      # Creates the tag on the commit being deployed, with notes generated from
+      # the changes since the previous release.
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          gh release create "$VERSION" \
+            --target "$GITHUB_SHA" \
+            --title "$VERSION" \
+            --generate-notes
+
+      # Last, because an npm version can never be republished. Authenticates
+      # through npm trusted publishing (OIDC), which needs npm 11.5.1 or later.
+      - name: Publish to npm
+        run: |
+          npm --version
+          npm publish --access public
