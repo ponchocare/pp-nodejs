@@ -17,8 +17,8 @@
     "patch:version": "VERSION=$(jq -r '.version' package.json) && find dist -type f -exec sed -i \"s|##VERSION##|$VERSION|g\" {} +",
     "test": "vitest run",
     "test:watch": "vitest",
-    "lint": "eslint --ext .ts,.html . --ignore-path .gitignore && prettier \"**/*.ts\" --check --ignore-path .gitignore",
-    "format": "eslint --ext .ts,.html . --fix --ignore-path .gitignore && prettier \"**/*.ts\" --write --ignore-path .gitignore"
+    "lint": "eslint . && prettier \"**/*.ts\" --check --ignore-path .gitignore",
+    "format": "eslint . --fix && prettier \"**/*.ts\" --write --ignore-path .gitignore"
   },
   "repository": {
     "type": "git",
@@ -42,34 +42,16 @@
   },
   "devDependencies": {
     "@types/node": "^26.6.6",
-    "@typescript-eslint/eslint-plugin": "^6.7.0",
-    "@typescript-eslint/parser": "^6.7.0",
+    "@typescript-eslint/eslint-plugin": "^8.74.0",
+    "@typescript-eslint/parser": "^8.74.0",
     "@typescript/native": "npm:typescript@^7.0.2",
-    "eslint": "^8.49.0",
+    "eslint": "^10.15.0",
     "eslint-config-prettier": "^10.1.8",
     "isomorphic-fetch": "^3.0.0",
     "prettier": "^3.0.3",
     "rimraf": "^6.1.4",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
     "vitest": "^4.1.8"
-  },
-  "eslintConfig": {
-    "parser": "@typescript-eslint/parser",
-    "extends": [
-      "prettier"
-    ],
-    "plugins": [
-      "@typescript-eslint"
-    ],
-    "rules": {
-      "no-undef": "off",
-      "no-unused-vars": "off",
-      "@typescript-eslint/no-unused-vars": [
-        "error"
-      ],
-      "import/no-unresolved": "off",
-      "import/extensions": "off"
-    }
   },
   "prettier": {
     "singleQuote": true,
