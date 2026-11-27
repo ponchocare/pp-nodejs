@@ -7,6 +7,7 @@
 - `npm test` — `vitest run` against `src/`, not `dist`. One file: `npx vitest run test/client.spec.ts`. No `vitest.config`; tests do not hit the network (`node-fetch` / `Api` are mocked).
 - `npm run lint` — ESLint then Prettier `--check`. `npm run format` fixes both. Prettier: `singleQuote`, `arrowParens: avoid`.
 - `npm run build` — `rimraf dist && tsc &&` sed-replace placeholders. `jq` is required. Do not treat `tsc` alone as a release build.
+- TypeScript 7 ships no JS API, so `typescript` is an npm alias for `@typescript/typescript6` (used by typescript-eslint, binary `tsc6`) and TS 7 is installed as `@typescript/native` (binary `tsc`, used by the build). Keep both aliases.
 - There is no typecheck script. `tsconfig.json` `include` is `src/**/*.ts` only, so tests are not compiled by `tsc`.
 
 ## Source vs published package
